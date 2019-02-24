@@ -15,7 +15,7 @@ app.post('/todos',(req,res)=>{
     });
     newTodo.save().then((doc)=>{
         console.log('Successfully saved');
-        res.send(doc);
+        res.status(200).send(doc);
         console.log(doc);
     }).catch((err)=>{
         console.log(err);
@@ -24,7 +24,20 @@ app.post('/todos',(req,res)=>{
     });
 
 });
+app.get('/todos',(req,res)=>{
+    Todo.find().then((todos)=>{
+        res.send({
+            todos
+        })
+    }).catch((err)=>{
+        res.status(400).send(e);
+    })
+});
 
 app.listen(3000,()=>{
     console.log('server running on 3000');
 });
+
+module.exports={
+    app
+}
