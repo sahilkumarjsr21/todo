@@ -11,6 +11,7 @@ const {queries}=require('../playground/mongoose-queries');
 var app=express();
 app.use(parser.json());
 
+var port=process.env.PORT||3000;
 app.post('/todos',(req,res)=>{
     //console.log(req.body);
     var newTodo=new Todo({
@@ -53,8 +54,24 @@ app.get('/todos/:id',(req,res)=>{
     
 });
 
-app.listen(3000,()=>{
-    console.log('server running on 3000');
+app.delete('/todos/:id',(req,res)=>{
+    var id= req.params.id;
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send('Inavalid Id');
+    }
+    Todo.findOneAndDelete({_id:id}).then((todo)=>{
+        if(!todo){
+            return res.status(400).send('No document found');
+        }
+        res.status(200).json(todo);
+    }).catch((err)=>{
+        res.status(404);
+        console.log(err);
+    });
+});
+
+app.listen(port,()=>{
+    console.log(`server running on ${port}`);
 });
 
 module.exports={
